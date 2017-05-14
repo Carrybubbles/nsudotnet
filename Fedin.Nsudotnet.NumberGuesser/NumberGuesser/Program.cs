@@ -38,8 +38,8 @@ namespace Fedin.Nsudotnet.NumberGuesser
                             history.Add($"{number} == {myNumber}");
                             Console.WriteLine("Congratulations! You guessed my number! ");
                             Console.WriteLine("Your tries = {0}", tries);
-                            TimeSpan interval = DateTime.Now - startTime;
-                            Console.WriteLine("You lost {0} minutes", interval.Minutes);
+                            TimeSpan interval = DateTime.Now.Subtract(startTime);
+                            Console.WriteLine("You lost {0:c}", interval);
                             Console.WriteLine("Your history: ");
                             history.ForEach(Console.WriteLine);                           
                             Console.WriteLine("Do you want to continue? y/n ");
@@ -65,13 +65,13 @@ namespace Fedin.Nsudotnet.NumberGuesser
                         }
                         if (number > myNumber)
                         {
-                            Console.WriteLine("My number is less");
+                            Console.WriteLine("My number is less than yours");
                             history.Add($"{number} > {myNumber}");
 
                         }
                         else if (number < myNumber)
                         {
-                            Console.WriteLine("My number is greater");
+                            Console.WriteLine("My number is more than yours");
                             history.Add($"{number} < {myNumber}");
                         }
                         tries++;
