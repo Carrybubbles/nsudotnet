@@ -28,12 +28,13 @@ namespace Fedin.Nsudotnet.LinesCounter
                             {
                                 comment = true;
                             }
-                            else if (line.StartsWith("*/"))
+                            else if (line.EndsWith("*/"))
                             {
                                 comment = false;
                             }
                             else if (line.Equals("") | line.Equals("//"))
                             {
+                                continue;
                             }
                             else if (!comment)
                             {
