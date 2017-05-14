@@ -24,19 +24,19 @@ namespace Fedin.Nsudotnet.LinesCounter
                         while (null != (line = reader.ReadLine()))
                         {
                             line = line.Replace(" ", string.Empty);
-                            if (line.StartsWith("/*"))
+                            if (line.Contains("/*"))
                             {
                                 comment = true;
                             }
-                            else if (line.EndsWith("*/"))
+                            if (line.Contains("*/"))
                             {
                                 comment = false;
                             }
-                            else if (line.Equals("") | line.Equals("//"))
+                            if (line == string.Empty || line.Equals("//"))
                             {
                                 continue;
                             }
-                            else if (!comment)
+                            if (!comment)
                             {
                                 codeLines++;
                             }
