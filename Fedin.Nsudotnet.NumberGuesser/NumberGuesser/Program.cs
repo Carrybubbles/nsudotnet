@@ -9,8 +9,10 @@ namespace Fedin.Nsudotnet.NumberGuesser
         static void Main(string[] args)
         {
             string[] humilations = {
-                "asshole", "idiot", "retard"
+                "asshole", "idiot", "retard","old fart", "virgin","nitwit",
+                "bastard","underage boy","fucked-up bastard"
             };
+            var randomGenerator = new Random();
             for(;;)
             {
                 Console.WriteLine("Enter your name!");
@@ -18,7 +20,7 @@ namespace Fedin.Nsudotnet.NumberGuesser
                 Console.WriteLine("Welcome {0}! To quit enter 'q' ", name);
                 Console.WriteLine("Enter your number, {0}", name);
                 var startTime = DateTime.Now;
-                var myNumber = new Random().Next(0, 100);
+                var myNumber = randomGenerator.Next(0, 100);
                 var tries = 1;
                 var history = new List<string>();
                 for (;;)
@@ -61,7 +63,7 @@ namespace Fedin.Nsudotnet.NumberGuesser
                         }
                         if (0 == tries % 4)
                         {
-                            Console.WriteLine("You fucking {0}, {1}", humilations[new Random().Next() % 3], name);
+                            Console.WriteLine("You fucking {0}, {1}", humilations[randomGenerator.Next() % humilations.Length], name);
                         }
                         if (number > myNumber)
                         {
