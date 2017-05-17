@@ -46,6 +46,12 @@ namespace Fedin.Nsudotnet.LinesCounter
                         line = line.Replace(" ", string.Empty);
                         if (line.Contains("/*"))
                         {
+                            // case : var lalka = /* 10;
+                            var comPos = line.IndexOf("/*", StringComparison.Ordinal);
+                            if(comPos != 0)
+                            {
+                                codeLines++;
+                            }
                             bigCom = true;
                         }
                         if (line.Contains("*/"))
