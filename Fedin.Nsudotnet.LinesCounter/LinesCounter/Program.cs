@@ -1,55 +1,70 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Fedin.Nsudotnet.LinesCounter
 {
     class Program
     {
+        static  string[] GetFiles(string path, string pattern, SearchOption searchOption)
+        {
+            var patterns = pattern.Split('|');
+            var files = new List<string>();
+            foreach (var pat in patterns)
+            {
+                files.AddRange(Directory.GetFiles(path, pat, searchOption));
+            }
+            return files.ToArray();
+        }
         static void Main(string[] args)
         {
 
-            Console.WriteLine("Enter path");
+            Console.WriteLine("Enter path, pls. To select current path, push ENTER button");
             var path = Console.ReadLine();
-            
-            if (!string.IsNullOrEmpty(path))
+
+            if (string.IsNullOrEmpty(path))
             {
-                var allFiles = Directory.GetFiles(path, args[0], SearchOption.AllDirectories);
-                var codeLines = 0;
-                foreach (var file in allFiles)
-                {
-                    using (var reader = new StreamReader(file))
-                    {
-                        string line;
-                        bool comment = false;
-                        while (null != (line = reader.ReadLine()))
-                        {
-                            line = line.Replace(" ", string.Empty);
-                            if (line.Contains("/*"))
-                            {
-                                comment = true;
-                            }
-                            if (line.Contains("*/"))
-                            {
-                                comment = false;
-                            }
-                            if (line == string.Empty || line.Equals("//"))
-                            {
-                                continue;
-                            }
-                            if (!comment)
-                            {
-                                codeLines++;
-                            }
-                        }
-                    }
-                }
-                Console.WriteLine("Amount of Code lines in {0} = {1}", path, codeLines);
-                Console.ReadLine();
+                path = Directory.GetCurrentDirectory();
+                Console.WriteLine("Selected current dir: {0}", path);
             }
             else
             {
-                Console.WriteLine("cant open dir");             
+                Console.WriteLine("You selected dir: {0}", path);
             }
+            Console.WriteLine("Enter file extensions. For multi using '|' ");
+            string extension = Console.ReadLine();
+            var allFiles = GetFiles(path, extension, SearchOption.AllDirectories);
+            var codeLines = 0;
+            foreach (var file in allFiles)
+            {
+                using (var reader = new StreamReader(file))
+                {
+                    string line;
+                    bool bigCom = false;
+                    while (null != (line = reader.ReadLine()))
+                    {
+                        line = line.Replace(" ", string.Empty);
+                        if (line.Contains("/*"))
+                        {
+                            bigCom = true;
+                        }
+                        if (line.Contains("*/"))
+                        {
+                            bigCom = false;
+                        }
+                        if (line == string.Empty || line.StartsWith("//"))
+                        {
+                            continue;
+                        }
+                        if (!bigCom && line.Length > 2)
+                        {
+                            codeLines++;
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("Amount of lines in {0} = {1}", path, codeLines);
+            Console.ReadLine();
         }
     }
 }
