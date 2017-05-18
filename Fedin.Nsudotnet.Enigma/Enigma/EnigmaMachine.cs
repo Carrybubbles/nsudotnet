@@ -21,36 +21,28 @@ namespace Fedin.Nsudotnet.Enigma
 
         private readonly Status _status;        
         private readonly string _algorithm;
-        private readonly string _inputPath;
-        private readonly string _outputPath;
-        private readonly string _keyPath; 
+        private readonly string _input;
+        private readonly string _output;
+        private readonly string _key; 
        
-        public EnigmaMachine(Status status, string algorithm, string inputPath, string outputPath, string keyPath)
+        public EnigmaMachine(Status status, string algorithm, string input, string output, string key)
         {
             _status = status;
             _algorithm = algorithm;
-            _inputPath = inputPath;
-            _outputPath = outputPath;
-            _keyPath = keyPath;
+            _input = input;
+            _output = output;
+            _key = key;
         }
 
         public bool Run()
         {
             if (_status == Status.Encrypt)
             {
-                if (Encrypt())
-                {
-                    return true;
-                }
-                return false;
+                return Encrypt();
             }
             if (_status == Status.Decrypt)
             {
-                if (Decrypt())
-                {
-                    return true;
-                }
-                return false;
+                return Decrypt();
             }
             return false;
         }
@@ -78,54 +70,56 @@ namespace Fedin.Nsudotnet.Enigma
 
         private bool Encrypt()
         {
-            if (!File.Exists(_inputPath))
+            if (!File.Exists(_input))
             {
                 return false;
             }
 
-            var inputFile = new FileStream(_inputPath, FileMode.Open, FileAccess.Read);
-            var outputFile = new FileStream(_outputPath, FileMode.Create, FileAccess.Write);
-
-            var pos = _inputPath.LastIndexOf('.');
-            var keyFileName = Concat(_inputPath.Substring(0,pos),".key.txt");
-            var keyFile = new FileStream(keyFileName, FileMode.Create, FileAccess.Write);
-
+            var keyFileNameWithExtension = Concat(Path.GetFileNameWithoutExtension(_input), ".key.txt");
+ 
             using (var algo = GetSpecificAlgo())
             {
                 if (algo == null) return false;
+
+                using (var inputFile = new FileStream(_input, FileMode.Open, FileAccess.Read))
+                using (var outputFile = new FileStream(_output, FileMode.Create, FileAccess.Write))
                 using (var cstream = new CryptoStream(outputFile, algo.CreateEncryptor(), CryptoStreamMode.Write))
                 {
                     inputFile.CopyTo(cstream);
                 }
+
+                using (var keyFile = new FileStream(keyFileNameWithExtension, FileMode.Create, FileAccess.Write))
                 using (var kstream = new StreamWriter(keyFile))
                 {
                     kstream.WriteLine(Convert.ToBase64String(algo.Key));
                     kstream.WriteLine(Convert.ToBase64String(algo.IV));
                 }
+
                 return true;
+
             }
         }
 
         private bool Decrypt()
         {
-            if (!File.Exists(_inputPath) && !File.Exists(_keyPath))
+            if (!File.Exists(_input) && !File.Exists(_key))
             {
                 return false;
             }
 
-            var inputFile = new FileStream(_inputPath, FileMode.Open, FileAccess.Read);
-            var outputFile = new FileStream(_outputPath, FileMode.Create, FileAccess.Write);
-            var keyFile = new FileStream(_keyPath, FileMode.Open, FileAccess.Read);
-
             using (var algo = GetSpecificAlgo())
             {
                 if (algo == null) return false;
+
+                using (var keyFile = new FileStream(_key, FileMode.Open, FileAccess.Read))
                 using (var kstream = new StreamReader(keyFile))
                 {
                     algo.Key = Convert.FromBase64String(kstream.ReadLine());
                     algo.IV = Convert.FromBase64String(kstream.ReadLine());
                 }
 
+                using (var outputFile = new FileStream(_output, FileMode.Create, FileAccess.Write))
+                using (var inputFile = new FileStream(_input, FileMode.Open, FileAccess.Read))
                 using (var cstream = new CryptoStream(inputFile, algo.CreateDecryptor(), CryptoStreamMode.Read))
                 {
                     cstream.CopyTo(outputFile);
