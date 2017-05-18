@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Fedin.Nsudotnet.NumberGuesser
 {
@@ -12,6 +13,7 @@ namespace Fedin.Nsudotnet.NumberGuesser
                 "asshole", "idiot", "retard","old fart", "virgin","nitwit",
                 "bastard","underage boy","fucked-up bastard"
             };
+            
             var randomGenerator = new Random();
             for(;;)
             {
@@ -63,7 +65,23 @@ namespace Fedin.Nsudotnet.NumberGuesser
                         }
                         if (0 == tries % 4)
                         {
-                            Console.WriteLine("You fucking {0}, {1}", humilations[randomGenerator.Next() % humilations.Length], name);
+                            string temp =
+                                $"You fucking {humilations[randomGenerator.Next() % humilations.Length]}";
+                            var pos = temp.IndexOf(" ", randomGenerator.Next() % temp.Length);
+                            StringBuilder builder = new StringBuilder(temp);
+                            if (pos == -1)
+                            {
+                                pos = 0;
+                                Console.WriteLine(builder.Insert(pos, $" {name}, "));
+                            }
+                            else if (pos == temp.Length)
+                            {
+                                Console.WriteLine(builder.Insert(pos, $" , {name} "));
+                            }
+                            else
+                            {
+                                Console.WriteLine(builder.Insert(pos, $" , {name}, "));
+                            }
                         }
                         if (number > myNumber)
                         {
