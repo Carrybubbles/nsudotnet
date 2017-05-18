@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Fedin.Nsudotnet.LinesCounter
 {
     class Program
     {
-        static  string[] GetFiles(string path, string pattern, SearchOption searchOption)
+        static List<string> GetFiles(string path, string pattern, SearchOption searchOption)
         {
             var patterns = pattern.Split('|');
             var files = new List<string>();
             foreach (var pat in patterns)
             {
-                files.AddRange(Directory.GetFiles(path, pat, searchOption));
+                files.AddRange(Directory.EnumerateFiles(path, pat, searchOption));
             }
-            return files.ToArray();
+            return files;
         }
         static void Main(string[] args)
         {
@@ -35,15 +36,17 @@ namespace Fedin.Nsudotnet.LinesCounter
             string extension = Console.ReadLine();
             var allFiles = GetFiles(path, extension, SearchOption.AllDirectories);
             var codeLines = 0;
+           
             foreach (var file in allFiles)
             {
                 using (var reader = new StreamReader(file))
                 {
-                    string line;
                     bool bigCom = false;
+                    string line;
                     while (null != (line = reader.ReadLine()))
                     {
-                        line = line.Replace(" ", string.Empty);
+                        StringBuilder builder = new StringBuilder(line);
+                        line = builder.Replace(" ", string.Empty).ToString();
                         if (line.Contains("/*"))
                         {
                             // case : var lalka = /* 10;
