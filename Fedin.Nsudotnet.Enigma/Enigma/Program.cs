@@ -11,31 +11,15 @@ namespace Fedin.Nsudotnet.Enigma
             {
                 if (args[0].Equals("encrypt", StringComparison.OrdinalIgnoreCase))
                 {
-                    EnigmaMachine machine = new EnigmaMachine(EnigmaMachine.Status.Encrypt,args[2], args[1], args[3], null);
-                    if (machine.Run())
-                    {
-                        Console.WriteLine("Success!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Error");
-                    }
-                    
+                    var machine = new EnigmaMachine(EnigmaMachine.Status.Encrypt,args[2], args[1], args[3], null);
+                    Console.WriteLine(machine.Run() ? "Success!" : "Error");
                 }
                 else if (args[0].Equals("decrypt", StringComparison.OrdinalIgnoreCase))
                 {
                     if (args.Length == 5)
                     {
-                        EnigmaMachine machine = new EnigmaMachine(EnigmaMachine.Status.Decrypt,args[2], args[1], args[4], args[3]);
-                        if (machine.Run())
-                        {
-                            Console.WriteLine("Success!");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error!");
-                        }
-
+                        var machine = new EnigmaMachine(EnigmaMachine.Status.Decrypt,args[2], args[1], args[4], args[3]);
+                        Console.WriteLine(machine.Run() ? "Success!" : "Error!");
                     }
                 }
                 Console.ReadLine();
