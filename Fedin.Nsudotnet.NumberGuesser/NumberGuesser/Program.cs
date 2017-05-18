@@ -66,21 +66,20 @@ namespace Fedin.Nsudotnet.NumberGuesser
                         if (0 == tries % 4)
                         {
                             string temp =
-                                $"You fucking {humilations[randomGenerator.Next() % humilations.Length]}";
+                                $" You fucking {humilations[randomGenerator.Next() % humilations.Length]} ";
                             var pos = temp.IndexOf(" ", randomGenerator.Next() % temp.Length);
-                            StringBuilder builder = new StringBuilder(temp);
-                            if (pos == -1)
+                            var builder = new StringBuilder(temp);
+                            if (pos == -1 || pos == 0)
                             {
                                 pos = 0;
-                                Console.WriteLine(builder.Insert(pos, $" {name}, "));
-                            }
-                            else if (pos == temp.Length)
+                                Console.WriteLine(builder.Insert(pos, $"{name},"));
+                            }else if (pos == temp.Length - 1)
                             {
-                                Console.WriteLine(builder.Insert(pos, $" , {name} "));
+                                Console.WriteLine(builder.Insert(pos, $", {name}"));
                             }
                             else
                             {
-                                Console.WriteLine(builder.Insert(pos, $" , {name}, "));
+                                Console.WriteLine(builder.Insert(pos, $", {name},"));
                             }
                         }
                         if (number > myNumber)
