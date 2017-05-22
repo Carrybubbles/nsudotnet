@@ -75,7 +75,7 @@ namespace Fedin.Nsudotnet.Enigma
                 return false;
             }
 
-            var keyFileNameWithExtension = Concat(Path.GetFileNameWithoutExtension(_input), ".key.txt");
+            var keyFileNameWithExtension = string.Format("{0}.key.txt", Path.GetFileNameWithoutExtension(_input));
  
             using (var algo = GetSpecificAlgo())
             {
