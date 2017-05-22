@@ -11,8 +11,8 @@ namespace Fedin.Nsudotnet.NumberGuesser
         {
             string[] humilations =
             {
-                " HELLO, fucking asshole ", " You fucking idiot ", " You are retard ", " OMG, old fart ", " Pfff,You are virgin ",
-                " WTF  bastard ",
+                "{0} HELLO fucking asshole {1}", "{0} You fucking idiot {1} ", "{0} You are retard {1}", "{0} OMG old fart {1}", "{0} Pfff, You are virgin {1}",
+                "{0} WTF bastard {1}"
             };
             var randomGenerator = new Random();
             for(;;)
@@ -66,19 +66,14 @@ namespace Fedin.Nsudotnet.NumberGuesser
                         if (0 == tries % 4)
                         {
                             string phrase = humilations[randomGenerator.Next() % humilations.Length];
-                            var pos = phrase.IndexOf(" ", randomGenerator.Next() % phrase.Length);
-                            var builder = new StringBuilder(phrase);
-                            if (pos == -1 || pos == 0)
+                            int namePos = randomGenerator.Next(0,2);
+                            if (namePos == 0)
                             {
-                                pos = 0;
-                                Console.WriteLine(builder.Insert(pos, $"{name},"));
-                            }else if (pos == phrase.Length - 1)
-                            {
-                                Console.WriteLine(builder.Insert(pos, $", {name}"));
+                                Console.WriteLine(phrase, name,string.Empty);
                             }
-                            else
+                            else if(namePos == 1)
                             {
-                                Console.WriteLine(builder.Insert(pos, $", {name},"));
+                                Console.WriteLine(phrase, string.Empty, name);
                             }
                         }
                         if (number > myNumber)
