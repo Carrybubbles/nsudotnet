@@ -45,8 +45,9 @@ namespace Fedin.Nsudotnet.LinesCounter
                     string line;
                     while (null != (line = reader.ReadLine()))
                     {
-                        StringBuilder builder = new StringBuilder(line);
-                        line = builder.Replace(" ", string.Empty).ToString();
+                        // хочу избавиться от пробелов в начале и в конце
+                        line = line.Trim();
+                        Console.WriteLine(line);
                         if (line.Contains("/*"))
                         {
                             // case : var lalka = /* 10;
