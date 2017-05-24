@@ -50,11 +50,20 @@ namespace Fedin.Nsudotnet.LinesCounter
                         {
                             // case : var lalka = /* 10;
                             var comPos = line.IndexOf("/*", StringComparison.Ordinal);
-                            if(comPos != 0)
+                            var arr = line.ToCharArray();
+                            for (int i = 0; i < comPos; i++)
                             {
-                                codeLines++;
+                                if (!char.IsWhiteSpace(arr[i]))
+                                {
+                                    break;
+                                }
+
+                                if (comPos == i - 1)
+                                {
+                                    codeLines++;
+                                    bigCom = true;
+                                }
                             }
-                            bigCom = true;
                         }
                         if (line.Contains("*/"))
                         {
