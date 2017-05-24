@@ -45,9 +45,7 @@ namespace Fedin.Nsudotnet.LinesCounter
                     string line;
                     while (null != (line = reader.ReadLine()))
                     {
-                        // хочу избавиться от пробелов в начале и в конце
-                        line = line.Trim();
-                        Console.WriteLine(line);
+                        var lineCom = false;
                         if (line.Contains("/*"))
                         {
                             // case : var lalka = /* 10;
@@ -62,11 +60,28 @@ namespace Fedin.Nsudotnet.LinesCounter
                         {
                             bigCom = false;
                         }
-                        if (line == string.Empty || line.StartsWith("//"))
+                        if (line == string.Empty)
                         {
                             continue;
                         }
-                        if (!bigCom && line.Length > 2)
+                        if (line.Contains("//"))
+                        {
+                            var pos = line.IndexOf("//");
+                            var arr = line.ToCharArray();
+                            for (int i = 0; i <= pos; i++)
+                            {
+                                if (char.IsWhiteSpace(arr[i]))
+                                {
+                                    continue;
+                                }
+                                if (arr[i] == '/' && pos == i)
+                                {
+                                    lineCom = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!bigCom  && !lineCom && line.Length > 2)
                         {
                             codeLines++;
                         }
